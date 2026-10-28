@@ -1,0 +1,23 @@
+name: Release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run dist:win
+      - name: Add README to zip
+        shell: pwsh
+        run: Compress-Archive -Path README.md -Update -DestinationPath (Get-ChildItem dist/*.zip).FullName
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.zip
+          prerelease: ${{ contains(github.ref_name, 'beta') }}
+          generate_release_notes: true

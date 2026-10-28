@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.concord/
+test/shots/
+*.log
+.DS_Store

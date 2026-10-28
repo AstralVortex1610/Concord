@@ -1,0 +1,17 @@
+name: Bug report
+description: Something broke or behaved oddly
+labels: [bug, beta]
+body:
+  - type: textarea
+    id: what
+    attributes: { label: What happened?, description: And what did you expect instead? }
+    validations: { required: true }
+  - type: textarea
+    id: steps
+    attributes: { label: Steps to reproduce, placeholder: "1. Open project\n2. Start team with 3 agents\n3. ..." }
+  - type: input
+    id: model
+    attributes: { label: Models / agents used, placeholder: "e.g. Claude Code via MCP + 2 built-in agents on gpt-4.1" }
+  - type: textarea
+    id: diag
+    attributes: { label: Diagnostics, description: "Feedback button (bottom left) -> copy diagnostics, paste here", render: text }

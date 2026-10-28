@@ -1,0 +1,8 @@
+name: Feature request
+description: Idea to make Concord better
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes: { label: What would you like?, description: What problem does it solve for you? }
+    validations: { required: true }

@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concord</title>
+<link rel="icon" href="mark.svg" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<header class="titlebar">
+  <div class="brand">
+    <svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><use href="#mark" /></svg>
+    <span class="word">Concord</span><span class="beta-pill" title="Public beta: things may change. Tell us what breaks.">Beta</span>
+  </div>
+  <button class="project-pill" id="projectPill" title="Switch project"><span class="dot"></span><span id="projectName">No project</span><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5" /></svg></button>
+  <div class="drag"></div>
+  <div class="team-ctl">
+    <span class="live-chip" id="liveChip"><i></i><span>Offline</span></span>
+    <button class="btn primary" id="teamBtn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg><span>Start team</span></button>
+  </div>
+  <div class="winctl" id="winctl">
+    <button data-win="min" title="Minimise"><svg viewBox="0 0 24 24"><path d="M6 12h12" /></svg></button>
+    <button data-win="max" title="Maximise"><svg viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="1.5" /></svg></button>
+    <button data-win="close" class="x" title="Close"><svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17" /></svg></button>
+  </div>
+</header>
+
+<nav class="rail">
+  <button data-view="score" class="on" title="Live score"><svg viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h18" /><circle cx="8" cy="7" r="2.2" class="f" /><circle cx="15" cy="12" r="2.2" class="f" /><circle cx="10" cy="17" r="2.2" class="f" /></svg><span>Live</span></button>
+  <button data-view="board" title="Board"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="5" height="16" rx="1.5" /><rect x="10" y="4" width="5" height="11" rx="1.5" /><rect x="17" y="4" width="4" height="7" rx="1.5" /></svg><span>Board</span><b class="badge" id="taskBadge"></b></button>
+  <button data-view="files" title="Files"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z" /><path d="M14 3v4h4M9 12h6M9 16h6" /></svg><span>Files</span></button>
+  <button data-view="memory" title="Shared memory"><svg viewBox="0 0 24 24"><path d="M12 3c4.5 0 8 2 8 4.5S16.5 12 12 12 4 10 4 7.5 7.5 3 12 3z" /><path d="M4 7.5v4.5C4 14.5 7.5 16.5 12 16.5s8-2 8-4.5V7.5M4 12v4.5C4 19 7.5 21 12 21s8-2 8-4.5V12" /></svg><span>Memory</span></button>
+  <button data-view="agents" title="Agents and models"><svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="3.2" /><circle cx="17" cy="11" r="2.4" /><path d="M3.5 19c.8-3 3-4.6 5.5-4.6s4.7 1.6 5.5 4.6M14.5 18.6c.6-2 1.9-3.1 3.5-3.1 1.5 0 2.7 1 3.2 2.8" /></svg><span>Agents</span></button>
+  <button data-view="connect" title="Connect outside agents"><svg viewBox="0 0 24 24"><path d="M9 7V3M15 7V3M7 7h10v4a5 5 0 01-10 0zM12 16v5" /></svg><span>Connect</span></button>
+  <button data-view="safety" title="Checkpoints and undo"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z" /><path d="M9 12l2 2 4-4" /></svg><span>Safety</span></button>
+  <div class="rail-foot">
+    <button id="feedbackBtn" title="Beta feedback"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" /><path d="M8 9h8M8 12h5" /></svg></button>
+    <button id="themeBtn" title="Light / dark"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z" /></svg></button>
+  </div>
+</nav>
+
+<main id="main">
+  <!-- Welcome -->
+  <section class="view" id="v-welcome">
+    <div class="welcome">
+      <div class="chord" aria-hidden="true"><span></span><span></span><span></span></div>
+      <h1>Many agents.<br /><em>One codebase.</em> No collisions.</h1>
+      <p class="lede">Point Concord at a project folder. Your agents, on any model from any lab, share one memory and one board, and can edit the same file at the same time without ever overwriting each other.</p>
+      <div class="row center gap">
+        <button class="btn primary big" id="openBtn"><svg viewBox="0 0 24 24"><path d="M3 7h6l2 2h10v10H3z" /></svg>Open a project folder</button>
+      </div>
+      <div class="recent" id="recentList"></div>
+      <p class="beta-note">Public beta · Concord takes automatic checkpoints of your project, but keep your own git commits too. <a id="welcomeFeedback">Send feedback</a></p>
+      <p class="browser-note hide" id="browserNote">You're viewing the dashboard in a browser. Open a project in the Concord app to start.</p>
+    </div>
+  </section>
+
+  <!-- Live score -->
+  <section class="view" id="v-score">
+    <div class="stats" id="stats"></div>
+    <div class="score-wrap">
+      <div class="score card">
+        <div class="score-head">
+          <h2>Live score</h2>
+          <span class="sub">every note is an agent action, newest on the right</span>
+          <div class="legend"><span><i class="n commit"></i>edit</span><span><i class="n merge"></i>auto-merged</span><span><i class="n lease"></i>reserved</span><span><i class="n reject"></i>clash stopped</span><span><i class="n task"></i>task</span></div>
+        </div>
+        <div class="lanes" id="lanes"></div>
+        <div class="goal-bar">
+          <svg viewBox="0 0 24 24"><path d="M12 3l2.4 5.6L20 9.2l-4.3 3.9 1.2 5.9L12 16l-4.9 3 1.2-5.9L4 9.2l5.6-.6z" /></svg>
+          <input id="goalInput" placeholder="Describe a goal and the planner will split it into tasks for the team…" />
+          <button class="btn" id="goalBtn">Plan it</button>
+        </div>
+      </div>
+      <aside class="feed card">
+        <div class="feed-head"><h2>Activity</h2><span class="sub" id="feedCount"></span></div>
+        <div class="feed-list" id="feed"></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Board -->
+  <section class="view" id="v-board">
+    <div class="view-head">
+      <h2>Board</h2>
+      <span class="sub">The shared checklist. Agents claim tasks here so no two work on the same thing.</span>
+      <div class="grow"></div>
+      <form class="add-task" id="addTask"><input id="newTask" placeholder="Add a task…" /><select id="newPrio"><option value="normal">Normal</option><option value="high">High</option><option value="low">Low</option></select><button class="btn primary">Add</button></form>
+    </div>
+    <div class="kanban" id="kanban"></div>
+  </section>
+
+  <!-- Files -->
+  <section class="view" id="v-files">
+    <div class="files-wrap">
+      <div class="tree card"><div class="tree-head"><h2>Files</h2><input id="fileFilter" placeholder="Filter" /></div><div id="tree" class="tree-list"></div></div>
+      <div class="code card">
+        <div class="code-head" id="codeHead"><span class="muted">Pick a file to watch it live.</span></div>
+        <div class="code-body" id="codeBody"></div>
+      </div>
+      <div class="side card" id="fileSide"></div>
+    </div>
+  </section>
+
+  <!-- Memory -->
+  <section class="view" id="v-memory">
+    <div class="view-head">
+      <h2>Shared memory</h2>
+      <span class="sub">What every agent knows: decisions, conventions, facts and lessons.</span>
+      <div class="grow"></div>
+      <div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" /><path d="M16 16l4.5 4.5" /></svg><input id="memQuery" placeholder="Search memory…" /></div>
+    </div>
+    <div class="chips" id="memKinds"></div>
+    <form class="mem-add card" id="memAdd">
+      <select id="memKind"><option>decision</option><option>convention</option><option>fact</option><option>lesson</option><option>todo</option></select>
+      <input id="memTitle" placeholder="Something every agent should know…" />
+      <input id="memBody" placeholder="Details (optional)" />
+      <button class="btn primary">Save</button>
+    </form>
+    <div class="mem-grid" id="memGrid"></div>
+  </section>
+
+  <!-- Agents -->
+  <section class="view" id="v-agents">
+    <div class="view-head"><h2>Agents &amp; models</h2><span class="sub">Connect any model from any lab, then give each agent its own.</span></div>
+    <div class="agents-wrap">
+      <div class="card pad">
+        <div class="sec-head"><h3>Model connections</h3><button class="btn primary sm" id="addProfile">+ Connect a model</button></div>
+        <div id="profiles" class="profiles"></div>
+      </div>
+      <div class="card pad">
+        <div class="sec-head"><h3>Your team</h3><button class="btn primary sm" id="addAgent">+ Add agent</button></div>
+        <div id="agentList" class="agent-list"></div>
+      </div>
+      <div class="card pad">
+        <div class="sec-head"><h3>Smart routing</h3><label class="switch"><input type="checkbox" id="routeOn" /><i></i></label></div>
+        <p class="muted small">Send different kinds of work to different models. Leave a row empty to use each agent's own model.</p>
+        <div class="route-grid" id="routing"></div>
+      </div>
+      <div class="card pad">
+        <div class="sec-head"><h3>Commands</h3><select id="cmdMode"><option value="off">Off</option><option value="safe">Safe list</option><option value="all">Anything</option></select></div>
+        <p class="muted small" id="cmdHint">Let agents run tests, builds and linters to check their own work.</p>
+      </div>
+      <div class="card pad">
+        <div class="sec-head"><h3>Token saver</h3><label class="switch"><input type="checkbox" id="leanOn" checked /><i></i></label></div>
+        <p class="muted small">Agents re-read only what changed, open long files as an outline, get just the clashing lines back when an edit bounces, and reuse cached prompts. Same results, far fewer tokens.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Safety -->
+  <section class="view" id="v-safety">
+    <div class="view-head">
+      <h2>Checkpoints</h2>
+      <span class="sub">A private snapshot of the whole project after every finished task. Restore any of them in one click; your own git repo is never touched.</span>
+      <div class="grow"></div>
+      <button class="btn primary" id="cpNow">Take a checkpoint now</button>
+    </div>
+    <div class="safety-wrap">
+      <div class="card pad"><div id="cpList" class="cp-list"></div></div>
+      <div class="card pad cp-side">
+        <h3>How undo works</h3>
+        <p class="muted small"><b>One file:</b> open it in Files and press Restore on any revision. Revision history now survives restarts.</p>
+        <p class="muted small"><b>The whole project:</b> restore a checkpoint here. Concord snapshots first, so a restore can be undone too.</p>
+        <p class="muted small"><b>Agents running commands:</b> set what they may run in Agents → Commands.</p>
+        <div id="cpDetail"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Connect -->
+  <section class="view" id="v-connect">
+    <div class="view-head"><h2>Bring your own agents</h2><span class="sub">Claude Code, Codex, Cursor, Cline, Gemini CLI and more join the same board and memory through MCP.</span></div>
+    <div class="connect-wrap">
+      <div class="card pad endpoint">
+        <div class="ep"><span class="lbl">MCP endpoint</span><code id="mcpUrl"></code><button class="btn sm" data-copy="#mcpUrl">Copy</button></div>
+        <div class="ep"><span class="lbl">REST API</span><code id="restUrl"></code><button class="btn sm" data-copy="#restUrl">Copy</button></div>
+        <p class="muted small">Add <b>?agent=your-name</b> to the URL so the board shows who is who. Only this computer can connect.</p>
+      </div>
+      <div class="card pad">
+        <div class="tabs" id="clientTabs"></div>
+        <pre class="snippet" id="snippet"></pre>
+        <div class="row gap"><button class="btn primary sm" id="copySnippet">Copy</button><span class="muted small" id="snippetHint"></span></div>
+      </div>
+      <div class="card pad">
+        <div class="sec-head"><h3>House rules for outside agents</h3><button class="btn sm" id="writeRules">Add CONCORD.md to project</button></div>
+        <p class="muted small">Outside agents also have their own edit tools. Paste this into their rules file (CLAUDE.md, AGENTS.md, .cursorrules, GEMINI.md) so every edit goes through Concord.</p>
+        <pre class="snippet" id="rules"></pre>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="drawer" id="drawer"><div class="drawer-card" id="drawerCard"></div></div>
+<div class="modal" id="modal"><div class="modal-card" id="modalCard"></div></div>
+<div class="toasts" id="toasts"></div>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="gA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff7a59" /><stop offset="1" stop-color="#ff5fa2" /></linearGradient>
+    <linearGradient id="gB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffc94d" /><stop offset="1" stop-color="#ff9f43" /></linearGradient>
+    <linearGradient id="gC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#46d6b0" /><stop offset="1" stop-color="#4fb3ff" /></linearGradient>
+    <symbol id="mark" viewBox="0 0 64 64">
+      <circle cx="24" cy="25" r="15" fill="url(#gA)" opacity=".92" />
+      <circle cx="40" cy="25" r="15" fill="url(#gB)" opacity=".85" style="mix-blend-mode:screen" />
+      <circle cx="32" cy="39" r="15" fill="url(#gC)" opacity=".85" style="mix-blend-mode:screen" />
+    </symbol>
+  </defs>
+</svg>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,517 @@
+[
+ {
+  "id": "openai",
+  "name": "OpenAI",
+  "region": "global",
+  "style": "openai",
+  "baseUrl": "https://api.openai.com/v1",
+  "altBaseUrls": [],
+  "keyUrl": "https://platform.openai.com/settings/organization/api-keys",
+  "models": [
+   "gpt-6.1-sol",
+   "gpt-6-astra",
+   "gpt-6-luna"
+  ],
+  "tools": true,
+  "docsUrl": "https://developers.openai.com/api/docs/models",
+  "notes": "Auth: Authorization: Bearer. Base and /v1/chat/completions confirmed in API reference curl examples. Models list Responses API as primary surface; Chat Completions still documented. Also gpt-6.1-terra. Optional OpenAI-Organization / OpenAI-Project headers."
+ },
+ {
+  "id": "anthropic",
+  "name": "Anthropic (Claude)",
+  "region": "global",
+  "style": "anthropic",
+  "baseUrl": "https://api.anthropic.com/v1",
+  "altBaseUrls": [
+   {
+    "label": "OpenAI-compatible (testing only, not for production)",
+    "baseUrl": "https://api.anthropic.com/v1/",
+    "style": "openai"
+   }
+  ],
+  "keyUrl": "https://platform.claude.com/settings/keys",
+  "models": [
+   "claude-sonnet-5-5",
+   "claude-opus-5-5",
+   "claude-haiku-5-5"
+  ],
+  "tools": true,
+  "docsUrl": "https://platform.claude.com/docs/en/api/overview",
+  "notes": "Native Messages API adapter (x-api-key + anthropic-version)."
+ },
+ {
+  "id": "gemini",
+  "name": "Google Gemini",
+  "region": "global",
+  "style": "openai",
+  "baseUrl": "https://generativelanguage.googleapis.com/v1beta/openai",
+  "altBaseUrls": [
+   {
+    "label": "Native Interactions API (POST /interactions, x-goog-api-key header)",
+    "baseUrl": "https://generativelanguage.googleapis.com/v1beta",
+    "style": "gemini"
+   }
+  ],
+  "keyUrl": "https://aistudio.google.com/apikey",
+  "models": [
+   "gemini-4-argon",
+   "gemini-3.8-flash",
+   "gemini-3.5-flash-lite"
+  ],
+  "tools": true,
+  "docsUrl": "https://ai.google.dev/gemini-api/docs/openai",
+  "notes": "OpenAI-compat is beta; Bearer auth; function calling supported. Native docs now lead with the Interactions API (v1beta/interactions, header x-goog-api-key). Legacy models/{m}:generateContent endpoint unverified in current docs. Gemini 4 / 3.6+ ignore temperature/top_p/top_k."
+ },
+ {
+  "id": "xai",
+  "name": "xAI (Grok)",
+  "region": "global",
+  "style": "openai",
+  "baseUrl": "https://api.x.ai/v1",
+  "altBaseUrls": [],
+  "keyUrl": "https://console.x.ai/team/default/api-keys",
+  "models": [
+   "grok-4.7"
+  ],
+  "tools": true,
+  "docsUrl": "https://docs.x.ai/docs/models",
+  "notes": "Bearer auth. Chat Completions labelled 'legacy'; Responses API preferred. Only one current chat model ID verified (grok-4.7, 500k context); add others after checking docs.x.ai/docs/models. Docs branded 'SpaceXSI'."
+ },
+ {
+  "id": "mistral",
+  "name": "Mistral AI",
+  "region": "global",
+  "style": "openai",
+  "baseUrl": "https://api.mistral.ai/v1",
+  "altBaseUrls": [],
+  "keyUrl": "https://console.mistral.ai",
+  "models": [
+   "mistral-large-latest",
+   "mistral-medium-3-5",
+   "mistral-small-4"
+  ],
+  "tools": true,
+  "docsUrl": "https://docs.mistral.ai/api/",
+  "notes": "Bearer auth; base confirmed by curl example in API reference. tool_choice also accepts 'any'. mistral-large-4 (v26.10) is public preview; aliases mistral-large-latest / mistral-medium-latest documented. Key URL is console root (exact keys page unverified)."
+ },
+ {
+  "id": "groq",
+  "name": "Groq",
+  "region": "global",
+  "style": "openai",
+  "baseUrl": "https://api.groq.com/openai/v1",
+  "altBaseUrls": [],
+  "keyUrl": "https://console.groq.com/keys",
+  "models": [
+   "openai/gpt-oss-120b",
+   "llama-3.3-70b-versatile",
+   "llama-3.1-8b-instant"
+  ],
+  "tools": true,
+  "docsUrl": "https://console.groq.com/docs/openai",
+  "notes": "Bearer auth. Rejects logprobs, logit_bias, messages[].name. Also openai/gpt-oss-20b; qwen/qwen3.8-27b is preview."
+ },
+ {
+  "id": "together",
+  "name": "Together AI",
+  "region": "global",
+  "style": "openai",
+  "baseUrl": "https://api.together.ai/v1",
+  "altBaseUrls": [
+   {
+    "label": "US-only (1.25x price)",
+    "baseUrl": "https://us-api.together.ai/v1",
+    "style": "openai"
+   },
+   {
+    "label": "Canada-only (1.25x price)",
+    "baseUrl": "https://ca-api.together.ai/v1",
+    "style": "openai"
+   }
+  ],
+  "keyUrl": "https://api.together.ai/settings/projects/~current/api-keys",
+  "models": [
+   "moonshotai/Kimi-K3",
+   "deepseek-ai/DeepSeek-V4.1-Flash",
+   "zai-org/GLM-5.3"
+  ],
+  "tools": true,
+  "docsUrl": "https://docs.together.ai",
+  "notes": "Bearer auth. Also MiniMaxAI/MiniMax-M3, Qwen/Qwen3.7-Plus."
+ },
+ {
+  "id": "fireworks",
+  "name": "Fireworks AI",
+  "region": "global",
+  "style": "openai",
+  "baseUrl": "https://api.fireworks.ai/inference/v1",
+  "altBaseUrls": [],
+  "keyUrl": "https://app.fireworks.ai",
+  "models": [
+   "accounts/fireworks/models/deepseek-v4p1-flash",
+   "accounts/fireworks/models/glm-5p3",
+   "accounts/fireworks/models/minimax-m3p1-flash"
+  ],
+  "tools": true,
+  "docsUrl": "https://docs.fireworks.ai/guides/function-calling",
+  "notes": "Bearer auth; OpenAI-compatible tool calling confirmed (tool_choice auto/none/required/specific). Model IDs use accounts/fireworks/models/ prefix. Exact keys page URL unverified (dashboard root given)."
+ },
+ {
+  "id": "openrouter",
+  "name": "OpenRouter",
+  "region": "global",
+  "style": "openai",
+  "baseUrl": "https://openrouter.ai/api/v1",
+  "altBaseUrls": [
+   {
+    "label": "EU in-region (Business/Enterprise)",
+    "baseUrl": "https://eu.openrouter.ai/api/v1",
+    "style": "openai"
+   }
+  ],
+  "keyUrl": "https://openrouter.ai/settings/keys",
+  "models": [
+   "~openai/gpt-sol-latest",
+   "~anthropic/claude-sonnet-latest"
+  ],
+  "tools": true,
+  "docsUrl": "https://openrouter.ai/docs/quickstart",
+  "notes": "Bearer auth. Optional HTTP-Referer and X-OpenRouter-Title headers for app attribution. '~' slugs are latest-aliases; full catalog via GET /api/v1/models. Key URL unverified."
+ },
+ {
+  "id": "deepseek",
+  "name": "DeepSeek",
+  "region": "china",
+  "style": "openai",
+  "baseUrl": "https://api.deepseek.com",
+  "altBaseUrls": [
+   {
+    "label": "Anthropic-compatible",
+    "baseUrl": "https://api.deepseek.com/anthropic",
+    "style": "anthropic"
+   }
+  ],
+  "keyUrl": "https://platform.deepseek.com/api_keys",
+  "models": [
+   "deepseek-flash",
+   "deepseek-v4-pro"
+  ],
+  "tools": true,
+  "docsUrl": "https://api-docs.deepseek.com/",
+  "notes": "Bearer auth; base has no /v1 (curl uses https://api.deepseek.com/chat/completions). deepseek-flash is served by DeepSeek-V4.1-Flash-1017; legacy deepseek-v4-flash names still accepted. Thinking via thinking:{type:enabled} + reasoning_effort. Tool-calling support not re-verified on a fetched page this session (unverified)."
+ },
+ {
+  "id": "moonshot",
+  "name": "Moonshot AI (Kimi)",
+  "region": "china",
+  "style": "openai",
+  "baseUrl": "https://api.moonshot.cn/v1",
+  "altBaseUrls": [
+   {
+    "label": "Global (unverified)",
+    "baseUrl": "https://api.moonshot.ai/v1",
+    "style": "openai"
+   }
+  ],
+  "keyUrl": "https://platform.kimi.com/console/api-keys",
+  "models": [
+   "kimi-k3.1-pro",
+   "kimi-k3.1-pro-highspeed",
+   "kimi-k3"
+  ],
+  "tools": true,
+  "docsUrl": "https://platform.kimi.com/docs/api/chat",
+  "notes": "Bearer auth; China base and tools confirmed on Chat Completions reference. K3 series always thinks (reasoning_effort low/high/max) and assistant reasoning_content must be echoed back in multi-turn/tool loops. Messages (Anthropic-style) and Responses APIs also exist; their base paths unverified. Global .ai host unverified."
+ },
+ {
+  "id": "zhipu",
+  "name": "Zhipu AI (GLM / BigModel)",
+  "region": "china",
+  "style": "openai",
+  "baseUrl": "https://open.bigmodel.cn/api/paas/v4",
+  "altBaseUrls": [
+   {
+    "label": "Z.ai global (unverified)",
+    "baseUrl": "https://api.z.ai/api/paas/v4",
+    "style": "openai"
+   }
+  ],
+  "keyUrl": "https://bigmodel.cn/usercenter/proj-mgmt/apikeys",
+  "models": [
+   "glm-5.3",
+   "glm-5.3-flash",
+   "glm-5.2"
+  ],
+  "tools": true,
+  "docsUrl": "https://docs.bigmodel.cn/cn/guide/develop/openai/introduction",
+  "notes": "Bearer auth. temperature must be in (0,1); 0 not allowed in OpenAI mode. Thinking via extra_body thinking:{type:enabled}. A Claude-compatible API exists (URL unverified). Z.ai global host unverified."
+ },
+ {
+  "id": "qwen",
+  "name": "Alibaba Qwen (Model Studio / DashScope)",
+  "region": "china",
+  "style": "openai",
+  "baseUrl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+  "altBaseUrls": [
+   {
+    "label": "Beijing workspace domain (recommended; replace {WorkspaceId})",
+    "baseUrl": "https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/compatible-mode/v1",
+    "style": "openai"
+   },
+   {
+    "label": "Singapore (legacy intl domain)",
+    "baseUrl": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+    "style": "openai"
+   },
+   {
+    "label": "Singapore workspace domain",
+    "baseUrl": "https://{WorkspaceId}.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1",
+    "style": "openai"
+   },
+   {
+    "label": "US (Virginia) workspace domain",
+    "baseUrl": "https://{WorkspaceId}.us-east-1.maas.aliyuncs.com/compatible-mode/v1",
+    "style": "openai"
+   },
+   {
+    "label": "Japan (Tokyo) workspace domain",
+    "baseUrl": "https://{WorkspaceId}.ap-northeast-1.maas.aliyuncs.com/compatible-mode/v1",
+    "style": "openai"
+   }
+  ],
+  "keyUrl": "https://bailian.console.aliyun.com/model/settings/api-key",
+  "models": [
+   "qwen3.8-max",
+   "qwen3.7-plus"
+  ],
+  "tools": true,
+  "docsUrl": "https://help.aliyun.com/zh/model-studio/compatibility-of-openai-with-dashscope",
+  "notes": "Bearer auth. Docs recommend per-workspace domains; legacy dashscope(-intl) domains 'still work'. API keys are region-bound (wrong region -> 401 invalid_api_key). Docs' param table says tools supported on qwen-plus/qwen-max and 'cannot be used with stream=True' (may be stale text). Only two current model IDs seen."
+ },
+ {
+  "id": "baidu",
+  "name": "Baidu Qianfan (ERNIE)",
+  "region": "china",
+  "style": "openai",
+  "baseUrl": "https://qianfan.baidubce.com/v2",
+  "altBaseUrls": [],
+  "keyUrl": "https://console.bce.baidu.com/qianfan/",
+  "models": [
+   "deepseek-v3.1-250821"
+  ],
+  "tools": true,
+  "docsUrl": "https://cloud.baidu.com/doc/qianfan-api/s/3m7of64lb",
+  "notes": "POST /v2/chat/completions with Authorization: Bearer bce-v3/ALTAK-... API key. Tools/tool_choice/parallel_tool_calls supported per model list. Only model ID shown on the page is deepseek-v3.1-250821; current ERNIE model IDs unverified (see cloud.baidu.com/doc/qianfan/s/rmh4stp0j). Key URL unverified."
+ },
+ {
+  "id": "volcengine",
+  "name": "Volcengine Ark (Doubao)",
+  "region": "china",
+  "style": "openai",
+  "baseUrl": "https://ark.cn-beijing.volces.com/api/v3",
+  "altBaseUrls": [
+   {
+    "label": "Anthropic-compatible (unverified; from third-party PR)",
+    "baseUrl": "https://ark.cn-beijing.volces.com/api/compatible",
+    "style": "anthropic"
+   },
+   {
+    "label": "Coding Plan endpoint",
+    "baseUrl": "https://ark.cn-beijing.volces.com/api/coding/v3",
+    "style": "openai"
+   }
+  ],
+  "keyUrl": "https://ark.volcengine.com/region:cn-beijing/apikey",
+  "models": [
+   "doubao-seed-2-1-pro-260915",
+   "doubao-seed-2-1-lite-260915",
+   "doubao-seed-evolving"
+  ],
+  "tools": true,
+  "docsUrl": "https://ark.volcengine.com/region:cn-beijing/docs/base-url-and-authentication",
+  "notes": "Doubao via Volcengine Ark. Use the model or endpoint ID from your Ark console."
+ },
+ {
+  "id": "hunyuan",
+  "name": "Tencent Hunyuan",
+  "region": "china",
+  "style": "openai",
+  "baseUrl": "https://api.hunyuan.cloud.tencent.com/v1",
+  "altBaseUrls": [],
+  "keyUrl": "https://console.cloud.tencent.com/hunyuan/start",
+  "models": [
+   "hunyuan-turbos-latest",
+   "hunyuan-vision"
+  ],
+  "tools": true,
+  "docsUrl": "https://cloud.tencent.com/document/product/1729/111007",
+  "notes": "Bearer auth. tool_choice only effective on hunyuan-turbos / hunyuan-functioncall. stop behaves differently (stops after match). Default 5 concurrent requests. Tencent is migrating Hunyuan to TokenHub; no new purchases on old platform, so this preset may age out."
+ },
+ {
+  "id": "minimax",
+  "name": "MiniMax",
+  "region": "global",
+  "style": "openai",
+  "baseUrl": "https://api.minimax.io/v1",
+  "altBaseUrls": [
+   {
+    "label": "China",
+    "baseUrl": "https://api.minimax.cn/v1",
+    "style": "openai"
+   }
+  ],
+  "keyUrl": "https://platform.minimax.io/console/personal-info",
+  "models": [
+   "MiniMax-M3.1-Flash",
+   "MiniMax-M3"
+  ],
+  "tools": true,
+  "docsUrl": "https://platform.minimax.io/docs/api-reference/text-openai-api",
+  "notes": "Bearer auth. Anthropic SDK is MiniMax's recommended path (base URL unverified). temperature/top_p ignored; n=1 only; legacy function_call unsupported (use tools). M3.1-Flash always thinks; reasoning_content must be preserved in tool loops. Key page URL approximate (console)."
+ },
+ {
+  "id": "stepfun",
+  "name": "StepFun",
+  "region": "china",
+  "style": "openai",
+  "baseUrl": "https://api.stepfun.com/v1",
+  "altBaseUrls": [
+   {
+    "label": "Global (stepfun.ai)",
+    "baseUrl": "https://api.stepfun.ai/v1",
+    "style": "openai"
+   },
+   {
+    "label": "Anthropic Messages (China)",
+    "baseUrl": "https://api.stepfun.com",
+    "style": "anthropic"
+   }
+  ],
+  "keyUrl": "https://platform.stepfun.ai/interface-key",
+  "models": [
+   "step-5-preview",
+   "step-3.7-flash",
+   "step-3.5-flash"
+  ],
+  "tools": true,
+  "docsUrl": "https://platform.stepfun.com/docs/zh/api-reference/chat/chat-completion-create",
+  "notes": "Bearer auth. Taken from official StepFun doc search excerpts (pages not fully fetched). Step Plan subscriptions use /step_plan/v1 instead. Key URL is the global console page."
+ },
+ {
+  "id": "yi",
+  "name": "01.AI (Yi)",
+  "region": "china",
+  "style": "openai",
+  "baseUrl": "https://api.lingyiwanwu.com/v1",
+  "altBaseUrls": [],
+  "keyUrl": "https://platform.lingyiwanwu.com/apikeys",
+  "models": [],
+  "tools": false,
+  "docsUrl": "https://platform.lingyiwanwu.com/docs",
+  "notes": "Unverified: 01.AI docs were unreachable. Enter a model name from your 01.AI console."
+ },
+ {
+  "id": "perplexity",
+  "name": "Perplexity",
+  "region": "global",
+  "style": "openai",
+  "baseUrl": "https://api.perplexity.ai/orchestrator/v1",
+  "altBaseUrls": [
+   {
+    "label": "Agent API (Responses format, not chat/completions)",
+    "baseUrl": "https://api.perplexity.ai/v1",
+    "style": "openai"
+   }
+  ],
+  "keyUrl": "https://console.perplexity.ai",
+  "models": [
+   "perplexity/kimi-k3"
+  ],
+  "tools": false,
+  "docsUrl": "https://docs.perplexity.ai/getting-started/quickstart",
+  "notes": "Bearer auth. Chat Completions format lives on the Orchestrator API (open-weight models). Agent API uses /v1/agent (alias /v1/responses), not chat/completions. Function-calling support on Orchestrator unverified, so tools=false."
+ },
+ {
+  "id": "cohere",
+  "name": "Cohere",
+  "region": "global",
+  "style": "openai",
+  "baseUrl": "https://api.cohere.ai/compatibility/v1",
+  "altBaseUrls": [
+   {
+    "label": "Native v2 Chat (POST /v2/chat)",
+    "baseUrl": "https://api.cohere.com/v2",
+    "style": "cohere"
+   }
+  ],
+  "keyUrl": "https://dashboard.cohere.com/api-keys",
+  "models": [
+   "command-a-plus-05-2026"
+  ],
+  "tools": true,
+  "docsUrl": "https://docs.cohere.com/docs/compatibility-api",
+  "notes": "Bearer auth on both. Compat: reasoning_effort only none/high; unsupported n, logit_bias, parallel_tool_calls, top_logprobs etc. Native uses p/k instead of top_p, tool_choice REQUIRED/NONE, strict_tools beta. Only one current chat model ID seen. Key URL unverified."
+ },
+ {
+  "id": "ollama",
+  "name": "Ollama",
+  "region": "local",
+  "style": "openai",
+  "baseUrl": "http://localhost:11434/v1",
+  "altBaseUrls": [
+   {
+    "label": "Ollama Cloud (API key required)",
+    "baseUrl": "https://ollama.com/v1",
+    "style": "openai"
+   }
+  ],
+  "keyUrl": "https://ollama.com/settings/keys",
+  "models": [
+   "gpt-oss:20b",
+   "qwen3:8b",
+   "gemma4:31b"
+  ],
+  "tools": true,
+  "docsUrl": "https://docs.ollama.com/api/openai-compatibility",
+  "notes": "Local: API key required by SDK but ignored. Tools supported on /v1/chat/completions. Models depend on what the user has pulled. Also has an Anthropic-compat endpoint."
+ },
+ {
+  "id": "lmstudio",
+  "name": "LM Studio",
+  "region": "local",
+  "style": "openai",
+  "baseUrl": "http://localhost:1234/v1",
+  "altBaseUrls": [],
+  "keyUrl": "",
+  "models": [],
+  "tools": true,
+  "docsUrl": "https://lmstudio.ai/docs/developer/openai-compat",
+  "notes": "No key by default (optional auth exists). Default port 1234. Models are whatever is loaded locally; fetch via GET /v1/models. Tool Use page exists in docs. Also exposes Anthropic-compat /v1/messages."
+ },
+ {
+  "id": "custom",
+  "name": "Custom (any OpenAI-compatible)",
+  "region": "any",
+  "style": "openai",
+  "baseUrl": "",
+  "altBaseUrls": [],
+  "keyUrl": "",
+  "models": [],
+  "tools": true,
+  "docsUrl": "",
+  "notes": "Any server that speaks /chat/completions: vLLM, llama.cpp, LiteLLM, a company gateway."
+ },
+ {
+  "id": "custom-anthropic",
+  "name": "Custom (Anthropic-compatible)",
+  "region": "any",
+  "style": "anthropic",
+  "baseUrl": "",
+  "altBaseUrls": [],
+  "keyUrl": "",
+  "models": [],
+  "tools": true,
+  "docsUrl": "",
+  "notes": "Any server that speaks the Anthropic /messages API (DeepSeek, MiniMax and Kimi offer one)."
+ }
+]

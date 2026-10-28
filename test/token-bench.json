@@ -1,0 +1,18 @@
+{
+ "off": {
+  "calls": 60,
+  "chars": 3459016,
+  "fresh": 1415013,
+  "conflicts": 12,
+  "meterIn": 864760,
+  "meterCached": 511007
+ },
+ "on": {
+  "calls": 64,
+  "chars": 1090139,
+  "fresh": 130559,
+  "conflicts": 10,
+  "meterIn": 272549,
+  "meterCached": 239907
+ }
+}

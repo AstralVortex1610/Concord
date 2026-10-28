@@ -1,0 +1,30 @@
+// Bridge between the dashboard and the desktop app. In a plain browser this is absent and the dashboard runs read-mostly.
+const { contextBridge, ipcRenderer } = require('electron');
+const call = (ch) => (...a) => ipcRenderer.invoke(ch, ...a);
+contextBridge.exposeInMainWorld('desktop', {
+  info: call('app:info'),
+  settings: call('settings:get'),
+  presets: call('presets'),
+  pickProject: call('project:pick'),
+  openProject: call('project:open'),
+  revealProject: call('project:reveal'),
+  saveProfile: call('profile:save'),
+  deleteProfile: call('profile:delete'),
+  testProfile: call('profile:test'),
+  listModels: call('profile:models'),
+  saveAgent: call('agent:save'),
+  deleteAgent: call('agent:delete'),
+  saveRouting: call('routing:save'),
+  startTeam: call('team:start'),
+  stopTeam: call('team:stop'),
+  teamStatus: call('team:status'),
+  plan: call('team:plan'),
+  saveCommands: call('commands:save'),
+  openLogs: call('logs:open'),
+  diag: call('diag'),
+  copy: call('clip'),
+  open: call('open'),
+  setTheme: call('theme'),
+  win: (cmd) => ipcRenderer.send('win', cmd),
+  on: (ch, fn) => ipcRenderer.on(ch, (_e, p) => fn(p)),
+});

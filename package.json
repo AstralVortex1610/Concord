@@ -1,0 +1,26 @@
+{
+  "name": "concord",
+  "productName": "Concord",
+  "version": "0.3.0-beta.1",
+  "description": "Concord: many AI coding agents, any model, one workspace. Shared memory, a live board, and edits that never overwrite each other.",
+  "main": "src/main.js",
+  "author": "Affan Mohammed",
+  "license": "MIT",
+  "bin": { "concord-mcp": "src/server/mcp-stdio.js" },
+  "scripts": {
+    "start": "electron .",
+    "serve": "node src/server/standalone.js",
+    "test": "node test/run-all.js",
+    "dist:win": "electron-builder --win zip --x64"
+  },
+  "dependencies": { "diff": "^9.0.0" },
+  "devDependencies": { "electron": "^38.0.0", "electron-builder": "^26.0.0", "resedit": "^2.0.3" },
+  "build": {
+    "appId": "com.affan.concord",
+    "productName": "Concord",
+    "directories": { "output": "dist" },
+    "files": ["src/**", "renderer/**", "assets/**", "package.json"],
+    "win": { "target": ["zip"], "signAndEditExecutable": false },
+    "afterPack": "build/afterPack.js"
+  }
+}
