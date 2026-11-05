@@ -30,6 +30,7 @@
 
 <nav class="rail">
   <button data-view="score" class="on" title="Live score"><svg viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h18" /><circle cx="8" cy="7" r="2.2" class="f" /><circle cx="15" cy="12" r="2.2" class="f" /><circle cx="10" cy="17" r="2.2" class="f" /></svg><span>Live</span></button>
+  <button data-view="swarm" title="Swarm Build: real agents build a real product"><svg viewBox="0 0 24 24"><path d="M5 4l9 4.5-4 1-2 4.5z" class="f" /><path d="M13 12l7 3.5-3.1.8-1.6 3.4z" class="f" /><path d="M4.5 15.5l4.5 2.2-2 .5-1 2.2z" class="f" /></svg><span>Swarm</span></button>
   <button data-view="board" title="Board"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="5" height="16" rx="1.5" /><rect x="10" y="4" width="5" height="11" rx="1.5" /><rect x="17" y="4" width="4" height="7" rx="1.5" /></svg><span>Board</span><b class="badge" id="taskBadge"></b></button>
   <button data-view="files" title="Files"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z" /><path d="M14 3v4h4M9 12h6M9 16h6" /></svg><span>Files</span></button>
   <button data-view="memory" title="Shared memory"><svg viewBox="0 0 24 24"><path d="M12 3c4.5 0 8 2 8 4.5S16.5 12 12 12 4 10 4 7.5 7.5 3 12 3z" /><path d="M4 7.5v4.5C4 14.5 7.5 16.5 12 16.5s8-2 8-4.5V7.5M4 12v4.5C4 19 7.5 21 12 21s8-2 8-4.5V12" /></svg><span>Memory</span></button>
@@ -79,6 +80,45 @@
         <div class="feed-head"><h2>Activity</h2><span class="sub" id="feedCount"></span></div>
         <div class="feed-list" id="feed"></div>
       </aside>
+    </div>
+  </section>
+
+  <!-- Swarm Build -->
+  <section class="view" id="v-swarm">
+    <div class="sw">
+      <div class="sw-top">
+        <div class="sw-head">
+          <h2 class="sw-title">Swarm <em>Build</em></h2>
+          <span class="sub" id="swNote"></span>
+        </div>
+        <div class="sw-input card">
+          <svg viewBox="0 0 24 24"><path d="M12 2l2.6 6.4L21 11l-6.4 2.6L12 20l-2.6-6.4L3 11l6.4-2.6z" /></svg>
+          <input id="swBrief" placeholder="What should the swarm build? e.g. a habit tracker with streaks, a calendar heatmap and a calm dark look" />
+          <button class="btn ghost sm" id="swHere" title="Build inside the open project instead of a new folder">in this project</button>
+          <button class="btn primary" id="swGo">Build it</button>
+        </div>
+        <div class="sw-ideas"><button class="sw-idea" data-idea="A pomodoro focus timer with a task list, session stats and a cosy lo-fi look">Pomodoro + tasks</button><button class="sw-idea" data-idea="A landing page for a coffee roastery with a hero, menu cards, a map section and a newsletter signup">Coffee landing page</button><button class="sw-idea" data-idea="A snake game with levels, a high-score table saved locally and neon visuals">Neon snake game</button><button class="sw-idea" data-idea="A personal finance dashboard: add expenses, category donut chart, monthly totals, saved in localStorage">Expense dashboard</button></div>
+        <div class="sw-steps" id="swSteps"></div>
+      </div>
+      <div class="sw-main">
+        <div class="sw-stage card">
+          <div class="sw-chrome"><i></i><i></i><i></i><span class="sw-url" id="swUrl"></span><div class="grow"></div>
+            <button class="btn sm hide" id="swLive">Go live</button><button class="btn sm hide" id="swOpen">Open in browser</button><button class="btn sm hide" id="swFolder">Folder</button><button class="btn sm stop hide" id="swStop">Stop</button></div>
+          <div class="sw-view" id="swView">
+            <iframe id="swF0" title="Live product"></iframe>
+            <iframe id="swF1" title="Live product"></iframe>
+            <div class="sw-empty" id="swEmpty"><div class="chord" aria-hidden="true"><span></span><span></span><span></span></div><p>A blank canvas.<br /><em>Your swarm builds it for real.</em></p></div>
+            <div class="sw-layer" id="swLayer"></div>
+            <div class="sw-dock" id="swDock"></div>
+            <div class="sw-cursors" id="swCursors"></div>
+          </div>
+        </div>
+        <aside class="sw-side">
+          <div class="card pad"><h3>The swarm</h3><div id="swAgents" class="sw-agents"></div></div>
+          <div class="card pad sw-tasks-card"><h3>Tasks</h3><div id="swTasks" class="sw-tasks"></div></div>
+          <div class="card pad sw-stats" id="swStats"></div>
+        </aside>
+      </div>
     </div>
   </section>
 
@@ -210,6 +250,7 @@
     </symbol>
   </defs>
 </svg>
+<script src="swarm.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

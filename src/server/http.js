@@ -17,7 +17,7 @@ function readBody(req, limit = 8 * 1024 * 1024) {
   });
 }
 
-function createServer({ getCoordinator, staticDir, onPlan, onRestore, port = 4317, host = '127.0.0.1', token = '' }) {
+function createServer({ getCoordinator, staticDir, onPlan, onRestore, getSwarm, onSwarmStart, port = 4317, host = '127.0.0.1', token = '' }) {
   const clients = new Set();
   const sessions = new Map(); // mcp session id -> agent id
   let bound = null;
@@ -108,6 +108,27 @@ function createServer({ getCoordinator, staticDir, onPlan, onRestore, port = 431
         if (!p.startsWith('/api') && file.startsWith(staticDir) && fs.existsSync(file) && fs.statSync(file).isFile()) { res.writeHead(200, { 'Content-Type': MIME[path.extname(file)] || 'application/octet-stream' }); return fs.createReadStream(file).pipe(res); }
       }
       if (!c) return send(res, 503, { error: 'No project is open in Concord yet.' });
+      // Live preview of the project (Swarm Build). Read-only, never the .concord folder; HTML gets a tiny error reporter.
+      if (p.startsWith('/preview/') && req.method === 'GET') {
+        let rel = decodeURIComponent(p.slice(9)) || 'index.html';
+        if (rel.endsWith('/')) rel += 'index.html';
+        const abs = path.resolve(c.root, rel);
+        if (!abs.startsWith(path.resolve(c.root) + path.sep) || /(^|[\\/])\.concord([\\/]|$)/.test(rel)) return send(res, 403, { error: 'not allowed' });
+        if (!fs.existsSync(abs) || !fs.statSync(abs).isFile()) { res.writeHead(404, { 'Content-Type': 'text/plain', 'Cache-Control': 'no-store' }); return res.end('Not built yet: ' + rel); }
+        const ext = path.extname(abs).toLowerCase();
+        const type = { ...MIME, '.htm': 'text/html; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.gif': 'image/gif', '.webp': 'image/webp', '.txt': 'text/plain; charset=utf-8', '.mp3': 'audio/mpeg', '.wav': 'audio/wav' }[ext] || 'application/octet-stream';
+        if (ext === '.html' || ext === '.htm') {
+          const html = fs.readFileSync(abs, 'utf8');
+          const tag = '<script>(function(){var P=function(k,m,s,l){try{parent.postMessage({concordPreview:k,message:String(m||"").slice(0,300),source:s||"",line:l||0},"*")}catch(e){}};window.addEventListener("error",function(e){if(e.target&&e.target!==window&&(e.target.src||e.target.href)){P("load","could not load "+(e.target.src||e.target.href),e.target.src||e.target.href)}else{P("runtime",e.message,e.filename,e.lineno)}},true);window.addEventListener("unhandledrejection",function(e){P("runtime","Unhandled promise rejection: "+(e.reason&&e.reason.message||e.reason))});var ce=console.error;console.error=function(){P("console",[].slice.call(arguments).join(" "));return ce.apply(console,arguments)}})();</script>';
+          const out = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, (m) => m + tag) : tag + html;
+          res.writeHead(200, { 'Content-Type': type, 'Cache-Control': 'no-store' }); return res.end(out);
+        }
+        res.writeHead(200, { 'Content-Type': type, 'Cache-Control': 'no-store' }); return fs.createReadStream(abs).pipe(res);
+      }
+      if (p === '/api/swarm') { const sw = getSwarm && getSwarm(); return send(res, 200, sw ? sw.status() : { phase: 'idle' }); }
+      if (p === '/api/swarm/start' && req.method === 'POST') { const b = await readBody(req); if (!onSwarmStart) return send(res, 400, { error: 'Swarm Build needs the desktop app.' }); try { return send(res, 200, await onSwarmStart(b.brief, b)); } catch (e) { return send(res, 400, { error: e.message }); } }
+      if (p === '/api/swarm/stop' && req.method === 'POST') { const sw = getSwarm && getSwarm(); return send(res, 200, sw ? sw.stop() : { phase: 'idle' }); }
+      if (p === '/api/swarm/check' && req.method === 'POST') { const sw = getSwarm && getSwarm(); if (!sw) return send(res, 400, { error: 'no swarm' }); return send(res, 200, { issues: sw.staticIssues() }); }
       if (p === '/api/health') return send(res, 200, { ok: true, name: 'concord', version, project: c.root });
       if (p === '/api/snapshot') return send(res, 200, c.snapshot());
       if (p === '/api/events') {

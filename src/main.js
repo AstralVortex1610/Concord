@@ -6,6 +6,8 @@ const { Coordinator } = require('./core/coordinator');
 const { createServer } = require('./server/http');
 const { Settings } = require('./settings');
 const { Team } = require('./agents/team');
+const { Swarm, slug } = require('./agents/swarm');
+const { makeProbe } = require('./probe');
 const llm = require('./agents/llm');
 
 if (!app.requestSingleInstanceLock()) { app.quit(); process.exit(0); }
@@ -13,6 +15,7 @@ if (!app.requestSingleInstanceLock()) { app.quit(); process.exit(0); }
 let win = null;
 let coordinator = null;
 let team = null;
+let swarm = null;
 let port = 4317;
 const settings = new Settings(app.getPath('userData'), safeStorage);
 const FEEDBACK_EMAIL = 'affanm2010@gmail.com';
@@ -38,7 +41,27 @@ const server = createServer({
   port: settings.s.port || 4317,
   onPlan: (goal) => planGoal(goal),
   onRestore: (sha) => restoreCheckpoint(sha),
+  getSwarm: () => swarm,
+  onSwarmStart: (brief, opts) => startSwarm(brief, opts || {}),
 });
+
+// ---------- Swarm Build ----------
+const probePage = makeProbe(BrowserWindow, () => port);
+
+function buildsDir() { return path.join(app.getPath('documents'), 'Concord Builds'); }
+async function startSwarm(brief, { newFolder } = {}) {
+  if (newFolder || !coordinator) {
+    let dir = path.join(buildsDir(), slug(String(brief).split(/\s+/).slice(0, 5).join(' ')));
+    for (let i = 2; fs.existsSync(dir) && fs.readdirSync(dir).filter((f) => f !== '.concord').length; i++) dir = path.join(buildsDir(), slug(String(brief).split(/\s+/).slice(0, 5).join(' ')) + '-' + i);
+    fs.mkdirSync(dir, { recursive: true });
+    const r = openProject(dir);
+    if (!r.ok) throw new Error(r.message);
+  }
+  const ready = settings.s.agents.filter((a) => a.enabled && settings.s.profiles.find((p) => p.id === a.profileId));
+  if (!ready.length) throw new Error('Add an agent with a model connection first (Agents tab).');
+  logLine('info', `swarm start in ${coordinator.root}: ${String(brief).slice(0, 200)}`);
+  return swarm.start(brief);
+}
 
 async function restoreCheckpoint(sha) {
   if (!coordinator) return { ok: false, message: 'Open a project first.' };
@@ -67,6 +90,8 @@ function openProject(dir) {
     getRouting: () => settings.s.routing,
     getCommands: () => settings.s.commands,
   });
+  if (swarm) swarm.stop();
+  swarm = new Swarm({ coordinator, team, probe: probePage, log: (m) => logLine('swarm', m) });
   coordinator.on('event', (e) => { if (e.type === 'agent-log' && e.kind === 'error') logLine('agent', `${e.agent}: ${e.text}`); });
   for (const a of settings.s.agents) {
     const p = settings.s.profiles.find((x) => x.id === a.profileId);
@@ -135,9 +160,13 @@ h('team:start', () => {
   coordinator.checkpoint('Before the team started', { agent: 'user', kind: 'start' });
   team.start(); return { ok: true, running: true };
 });
-h('team:stop', () => { if (team) team.stop(); if (coordinator) for (const a of settings.s.agents) { coordinator.releaseAll(a.id, 'team paused'); coordinator.touch(a.id, 'idle'); } return { ok: true, running: false }; });
+h('team:stop', () => { if (swarm) swarm.stop(); if (team) team.stop(); if (coordinator) for (const a of settings.s.agents) { coordinator.releaseAll(a.id, 'team paused'); coordinator.touch(a.id, 'idle'); } return { ok: true, running: false }; });
 h('team:status', () => ({ running: !!(team && team.active), logs: team ? Object.fromEntries(team.logs) : {} }));
 h('team:plan', async (goal) => ({ ok: true, tasks: await planGoal(goal) }));
+h('swarm:start', (brief, opts) => startSwarm(brief, opts || {}));
+h('swarm:stop', () => (swarm ? swarm.stop() : { phase: 'idle' }));
+h('swarm:status', () => (swarm ? swarm.status() : { phase: 'idle' }));
+h('preview:open', () => { if (!swarm || !swarm.state.entry) return { ok: false }; shell.openExternal(`http://127.0.0.1:${port}/preview/${swarm.state.entry}`); return { ok: true }; });
 h('commands:save', (c) => { settings.setCommands(c); return { ok: true }; });
 h('logs:open', () => { fs.mkdirSync(LOG_DIR, { recursive: true }); return shell.openPath(LOG_DIR); });
 h('diag', () => {

@@ -23,4 +23,7 @@ contextBridge.exposeInMainWorld('desktop', {
   testProfile: ok.bind(null, { ok: true, message: 'claude-opus-5-5 answered in 0.8s: “ready”' }), listModels: ok.bind(null, { ok: true, models: [] }),
   saveAgent: ok, deleteAgent: ok, saveRouting: ok, startTeam: ok.bind(null, { ok: true }), stopTeam: ok.bind(null, { ok: true }),
   teamStatus: ok.bind(null, { running: true, logs: {} }), plan: ok.bind(null, { ok: true, tasks: 5 }), copy: ok, open: ok, saveCommands: ok, openLogs: ok, diag: ok.bind(null, { version: '0.3.0-beta.1', electron: '38.2.0', os: 'Windows_NT 10.0.26100 x64', agents: 4, models: 'anthropic, openai, deepseek, qwen, ollama', commands: 'safe', logTail: '', email: 'affanm2010@gmail.com' }), setTheme: ok, win: () => {}, on: () => {},
+  swarmStart: (brief) => fetch('/api/swarm/start', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ brief }) }).then((r) => r.json()),
+  swarmStop: () => fetch('/api/swarm/stop', { method: 'POST' }).then((r) => r.json()), swarmStatus: () => fetch('/api/swarm').then((r) => r.json()), openPreview: ok,
 });
+// Swarm Build calls go to the local server in tests.

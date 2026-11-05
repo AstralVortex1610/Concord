@@ -22,7 +22,7 @@
 
   // ---------- navigation ----------
   function show(view) {
-    if (!S.snap && !['agents', 'connect'].includes(view)) view = 'welcome';
+    if (!S.snap && !['agents', 'connect', 'swarm'].includes(view)) view = 'welcome';
     if (view === 'safety' && !S.snap) view = 'welcome';
     S.view = view;
     $$('.view').forEach((v) => v.classList.toggle('on', v.id === 'v-' + view));
@@ -66,6 +66,7 @@
     const es = new EventSource('/api/events');
     es.onmessage = (m) => {
       const e = JSON.parse(m.data);
+      if (window.ConcordSwarm) try { window.ConcordSwarm.onEvent(e); } catch (err) { console.warn(err); }
       if (e.type === 'hello' || e.type === 'project') { reload(); return; }
       if (e.type === 'agent-log') {
         if (e.kind === 'think' || e.kind === 'start' || e.kind === 'done' || e.kind === 'error') S.thoughts[e.agent] = { text: e.text, at: e.at, kind: e.kind };
@@ -111,6 +112,7 @@
     if (S.view === 'agents') renderAgents();
     if (S.view === 'connect') renderConnect();
     if (S.view === 'safety' && full) renderSafety();
+    if (S.view === 'swarm' && full && window.ConcordSwarm) window.ConcordSwarm.render();
   }
 
   function renderWelcome() {
@@ -508,7 +510,7 @@ Several AI agents edit this project at the same time. Concord keeps them from ov
 
   // ---------- project + team ----------
   async function openDir(dir) { const r = await D.openProject(dir); if (!r.ok) return toast(r.message, '#ff5b6e'); await afterOpen(); }
-  async function afterOpen() { S.file = null; S.fileData = null; S.notes = []; await loadSnap(); S.settings = D ? await D.settings() : null; show('score'); }
+  async function afterOpen() { S.file = null; S.fileData = null; S.notes = []; await loadSnap(); S.settings = D ? await D.settings() : null; show(S.view === 'swarm' ? 'swarm' : 'score'); }
   $('#openBtn').onclick = async () => { const r = await D.pickProject(); if (r.ok) afterOpen(); };
   $('#projectPill').onclick = async () => { if (!D) return; const r = await D.pickProject(); if (r.ok) afterOpen(); };
   function setRunning(on) {
@@ -545,6 +547,7 @@ Several AI agents edit this project at the same time. Concord keeps them from ov
       D.on('project', () => afterOpen());
     }
     await loadSnap();
+    if (window.ConcordSwarm) window.ConcordSwarm.init({ S, D, api, toast, show, agentOf, setRunning });
     connectEvents();
     show(S.snap ? 'score' : 'welcome');
     if (window.__concordReady) window.__concordReady();

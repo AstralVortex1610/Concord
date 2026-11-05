@@ -20,6 +20,16 @@ Run Claude Code, Cursor, Codex, Gemini CLI and your own built-in agents **on the
 
 ---
 
+## New: Swarm Build 🐝
+
+Type one product idea. A planner designs it and lays down a skeleton, then a **swarm of real agents on any models builds it at the same time, even inside the same files**. Each agent is a live cursor: when its commit adds something, it draws that element into the live preview. Then Concord loads the product in a hidden browser, clicks around, catches errors and broken links, and sends fixes back to the swarm until it runs clean. Every file is real and stays in your folder.
+
+| Building | Live |
+|---|---|
+| ![Swarm building](docs/media/swarm-building.png) | ![Swarm live](docs/media/swarm-live.png) |
+
+Open the **Swarm** tab, describe a product, press **Build it**. New builds go to `Documents/Concord Builds/`, or use *in this project*. Works best with 3+ agents; web products (HTML/CSS/JS, no build step) get the live preview and the browser check.
+
 ## Why Concord?
 
 Run two AI agents on one repo and sooner or later one quietly erases the other's work. Concord is a **conductor for your agents**: a local coordinator every agent edits through, so parallel agents become safe instead of chaotic.
@@ -85,6 +95,7 @@ npm test             # merge stress test, multi-process MCP, mock agents, token 
 - [x] No-overwrite merge engine, leases, memory, board, MCP/REST
 - [x] 25 model presets, built-in agent team, token saver
 - [x] Checkpoints, file restore, safe command mode (v0.3 beta)
+- [x] Swarm Build: one prompt to a working product, built in parallel and checked (v0.4 beta)
 - [ ] macOS and Linux builds
 - [ ] Signed installer + auto-update
 - [ ] Live typing view (CRDT) and semantic memory search
