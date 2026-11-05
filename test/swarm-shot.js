@@ -33,6 +33,7 @@ app.whenReady().then(async () => {
   const js = (code) => win.webContents.executeJavaScript(code);
   const snap = async (name) => { fs.writeFileSync(path.join(out, name + '.png'), (await win.webContents.capturePage()).toPNG()); console.log('shot', name, swarm.state.phase); };
   if (process.env.LIGHT) await js("document.documentElement.dataset.theme='light'");
+  await js("window.__wantView = 'swarm'"); for (let i = 0; i < 50 && !(await js('!!window.__bootDone')); i++) await wait(100);
   await js("__show('swarm')"); await wait(1500);
   await snap('s0-empty');
   await js(`document.getElementById('swBrief').value = 'A pomodoro focus timer with a task list, session stats and a cosy look'`);

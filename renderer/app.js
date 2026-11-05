@@ -549,7 +549,8 @@ Several AI agents edit this project at the same time. Concord keeps them from ov
     await loadSnap();
     if (window.ConcordSwarm) window.ConcordSwarm.init({ S, D, api, toast, show, agentOf, setRunning });
     connectEvents();
-    show(S.snap ? 'score' : 'welcome');
+    if (!window.__wantView) show(S.snap ? 'score' : 'welcome'); else show(window.__wantView);
+    window.__bootDone = true;
     if (window.__concordReady) window.__concordReady();
   })();
   window.__S = S; window.__show = show; window.__openTask = openTask; window.__profileModal = profileModal; window.__loadFile = loadFile;
